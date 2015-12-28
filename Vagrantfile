@@ -3,7 +3,7 @@
 
 $hostnames = <<EOF
 echo "Setting up /etc/hosts"
-echo -e "172.16.81.5\tkibana\n172.16.81.6\tredis\n172.16.81.7\tlogstash\n172.16.81.8\telasticsearch\n172.16.81.9\tsyslog\n172.16.81.10\tclient\n" >> /etc/hosts
+echo -e "172.16.81.4\tansible\n172.16.81.5\tkibana\n172.16.81.6\tredis\n172.16.81.7\tlogstash\n172.16.81.8\telasticsearch\n172.16.81.9\tsyslog\n172.16.81.10\tclient\n" >> /etc/hosts
 EOF
 
 # Install packages I like
@@ -20,6 +20,16 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
+  config.vm.define "ansible" do |ansible|
+     ansible.vm.box = "geerlingguy/centos7"
+     ansible.vm.hostname = "ansible"
+     ansible.vm.network :private_network, ip: "172.16.81.4"
+     ansible.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "512"]
+      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+     end
+  end
+
  config.vm.define "kibana" do |kibana|
     kibana.vm.box = "geerlingguy/centos7"
     kibana.vm.hostname = "kibana"
@@ -29,7 +39,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      vb.customize ["modifyvm", :id, "--memory", "512"]
      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     end
-  end
+ end
 
  config.vm.define "redis" do |redis|
     redis.vm.box = "geerlingguy/centos7"
