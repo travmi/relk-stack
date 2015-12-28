@@ -1,0 +1,6 @@
+redis
+logstash
+elasticsearch
+client
+syslog
+kibana

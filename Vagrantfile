@@ -10,7 +10,7 @@ EOF
 $packages = <<EOF
 echo "Installing extra packages"
 yum update -y
-yum install vim git rsync wget telnet bind-utils traceroute net-tools -y
+yum install vim git rsync wget telnet bind-utils traceroute net-tools epel-release -y
 setenforce 0
 sed -i s/SELINUX=enforcing/SELINUX=disabled/g /etc/selinux/config
 EOF
@@ -24,10 +24,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      ansible.vm.box = "geerlingguy/centos7"
      ansible.vm.hostname = "ansible"
      ansible.vm.network :private_network, ip: "172.16.81.4"
+     ansible.vm.synced_folder "roles", "/etc/ansible/roles"
      ansible.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "512"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      end
+     ansible.vm.provision "shell", inline: "yum install ansible rsync -y; rsync -av /vagrant/config/ansible.cfg /etc/ansible/ansible.cfg; rsync -av /vagrant/config/hosts /etc/ansible/hosts"
   end
 
  config.vm.define "kibana" do |kibana|
@@ -70,6 +72,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--memory", "1024"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      end
+     ansible.vm.preovision "shell", inline: ""
    end
 
    config.vm.define "syslog" do |syslog|
