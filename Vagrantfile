@@ -72,7 +72,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--memory", "1024"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      end
-     elasticsearch.vm.preovision "shell", inline: ""
+     elasticsearch.vm.provision "shell", inline: ""
    end
 
    config.vm.define "syslog" do |syslog|
