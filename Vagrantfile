@@ -36,7 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     kibana.vm.box = "geerlingguy/centos7"
     kibana.vm.hostname = "kibana"
     kibana.vm.network :private_network, ip: "172.16.81.5"
-    kibana.vm.network :forwarded_port, guest: 80, host: 80
+#    kibana.vm.network :forwarded_port, guest: 80, host: 80
     kibana.vm.provider "virtualbox" do |vb|
      vb.customize ["modifyvm", :id, "--memory", "512"]
      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
@@ -67,7 +67,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      elasticsearch.vm.box = "geerlingguy/centos7"
      elasticsearch.vm.hostname = "elasticsearch"
      elasticsearch.vm.network :private_network, ip: "172.16.81.8"
-     elasticsearch.vm.network :forwarded_port, guest: 9200, host: 9200
+#     elasticsearch.vm.network :forwarded_port, guest: 9200, host: 9200
      elasticsearch.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "1024"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]

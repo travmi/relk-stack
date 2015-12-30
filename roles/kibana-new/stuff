@@ -1,0 +1,45 @@
+[Unit]
+Description=Kibana 4
+
+[Service]
+Type=simple
+User=nobody
+Environment=CONFIG_PATH=/etc/kibana/kibana.yml
+Environment=NODE_ENV=production
+ExecStart=/opt/kibana/node/bin/node /opt/kibana/src/bin/kibana.js
+
+[Install]
+WantedBy=multi-user.target
+
+
+1  cd /etc/yum.repos.d/
+ 2  ll -h
+ 3  vi kibana.repo
+ 4  rpmkeys --import http://packages.elastic.co/GPG-KEY-elasticsearch
+ 5  cd
+ 6  yum install kibana
+ 7  vi /opt/kibana/config/kibana.yml
+ 8  ll -h
+ 9  systemctl restart kibana
+10  systemctl status kibana
+11  systemctl start kibana
+12  ll -h
+13  netstat -ntulp
+14  cd /opt/kibana/
+15  ll
+16  ll -h config
+17  ll -h src
+18  ll -h
+19  cd /lib/systemd/system
+20  ll
+21  vi kibana.service
+22  mkdir /etc/kibana
+23  cp /opt/kibana/config/kibana.yml /etc/kibana/
+24  vi kibana.service
+25  38  systemctl restart kibana
+39  systemctl status kibana
+40  curl '72.16.81.8:9200/_cat/indices?v'
+41  curl '172.16.81.8:9200/_cat/indices?v'
+42  ping elasticsearch
+43  curl 'elasticsearch:9200/_cat/indices?v'
+44  history

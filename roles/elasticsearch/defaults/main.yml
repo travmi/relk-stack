@@ -6,7 +6,6 @@ elasticsearch_group: elasticsearch
 elasticsearch_version: 2.1.1
 elasticsearch_yum_dependencies:
   - htop
-  - ntp
   - unzip
   - epel-release
 elasticsearch_max_open_files: 65535
@@ -17,12 +16,8 @@ elasticsearch_data_dir: /var/lib/elasticsearch
 elasticsearch_work_dir: /tmp/elasticsearch
 elasticsearch_conf_dir: /etc/elasticsearch
 elasticsearch_pid_dir: /var/run
-elasticsearch_service_startonboot: no
-elasticsearch_timezone: "Etc/UTC"  # Default to UTC
+elasticsearch_service_startonboot: yes
+elasticsearch_timezone: "America/Chicago"
 
 #elasticsearch_http_cors_enabled: "false"
 elasticsearch_service_state: started
-
-# Non-Elasticsearch Defaults
-apt_cache_valid_time: 300 # seconds between "apt-get update" calls.
-elasticsearch_install_java: "true"

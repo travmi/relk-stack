@@ -1,0 +1,23 @@
+---
+
+# reset rights
+- name: adapt kibana config
+  file: path={{ kibana_path }} owner=www-data group=www-data recurse=yes
+
+# set kibana config url
+- name: reset rights
+  lineinfile: 'dest={{ kibana_path }}/src/config.js regexp="\s+elasticsearch:" line="     elasticsearch: \"http://{{dns_url_kibana}}:9200\"," backup=yes backrefs=yes'
+
+- name: restart elasticsearch service
+  service: name=elasticsearch state=restarted
+
+- name: remove Kibana archive
+  file: path=/tmp/kibana-{{kibana_full_version}}.tgz state=absent force=yes
+
+- name: restart nginx
+  service: name=nginx state=restarted
+
+- name: reload systemd
+  shell: systemctl daemon-reload
+  changed_when: false
+  when: "'systemd' in systemd.stdout and kibana_manage_service"

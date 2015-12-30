@@ -3,3 +3,7 @@
     roles:
       - openjdk
       - elasticsearch
+
+    vars:
+      elasticsearch_cluster_name: log-cluster
+      elasticsearch_network_bind_host: "{{ ansible_enp0s8.ipv4.address }}"

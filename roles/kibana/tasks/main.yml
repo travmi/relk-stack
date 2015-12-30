@@ -1,0 +1,18 @@
+---
+
+- include: nginx.yml
+
+- name: create destination directory
+  file: path={{ kibana_path }} owner=nginx group=nginx mode=0755 state=directory
+  tags: [kibana]
+
+- name: install epel
+  yum: name=epel-release state=latest
+
+- include: kibana3.yml
+  when: "{{kibana_major_version}} == 3"
+  tags: [kibana]
+
+- include: kibana4.yml
+  when: "{{kibana_major_version}} == 4"
+  tags: [kibana]
