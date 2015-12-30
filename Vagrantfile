@@ -10,7 +10,7 @@ EOF
 $packages = <<EOF
 echo "Installing extra packages"
 yum update -y
-yum install vim git rsync wget telnet bind-utils traceroute net-tools epel-release -y
+yum install vim git rsync wget telnet bind-utils traceroute net-tools epel-release dos2unix -y
 setenforce 0
 sed -i s/SELINUX=enforcing/SELINUX=disabled/g /etc/selinux/config
 EOF
@@ -29,6 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      end
      ansible.vm.provision "shell", inline: "yum install ansible rsync -y; rsync -av /vagrant/config/ansible.cfg /etc/ansible/ansible.cfg; rsync -av /vagrant/config/hosts /etc/ansible/hosts"
+     ansible.vm.provision "shell", inline: "ln -s /vagrant/bin/sync.sh sync; cd /etc/ansible; ln -s /vagrant/bin/sync.sh sync"
  end
 
  config.vm.define "kibana" do |kibana|
