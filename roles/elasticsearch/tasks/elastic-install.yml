@@ -25,9 +25,10 @@
     recurse=yes
 
 - name: elastic-install | Check if we have elastic with same version installed
-  stat:
-    path="/usr/share/elasticsearch/lib/elasticsearch-{{ elasticsearch_version }}.jar"
+  stat: path="/usr/share/elasticsearch/lib/elasticsearch-{{ elasticsearch_version }}.jar"
   register: installed_version
+
+- debug: var=installed_version
 
 - name: elastic-install | Try to stop elasticsearch if running
   service:
@@ -36,14 +37,12 @@
   ignore_errors: yes
   when: not installed_version.stat.exists
 
-- name: elastic-install | Download Elasticsearch rpm
-  get_url:
-    url={{ elasticsearch_download_url_rpm }}/{{ elasticsearch_version }}/elasticsearch-{{ elasticsearch_version }}.rpm
-    dest=/tmp/elasticsearch-{{ elasticsearch_version }}.rpm
-    mode=0440
-  when: not installed_version.stat.exists
+- name: install gpg key for repository
+  rpm_key: state=present key=https://packages.elastic.co/GPG-KEY-elasticsearch
 
-#shell: dpkg --remove elasticsearch
+- name: install elasticsearch repository
+  copy: src=elasticsearch.repo dest=/etc/yum.repos.d/elasticsearch.repo
+
 - name: elastic-install | Uninstalling previous version if applicable
   yum:
      name="elasticsearch"
@@ -56,11 +55,8 @@
     state=absent
   when: not installed_version.stat.exists
 
-- name: elastic-install | Install Elasticsearch rpm
-  yum:
-    name="/tmp/elasticsearch-{{ elasticsearch_version }}.rpm"
-  when: not installed_version.stat.exists
-  notify: Restart Elasticsearch
+- name: install elasticsearch
+  yum: name=elasticsearch state=latest
 
 - name: elastic-install | Ensure elastic directories exists
   file:

@@ -1,9 +1,6 @@
 ---
 # Elasticsearch Ansible Tasks
 
-- include: java.yml
-  when: elasticsearch_install_java
-
 - include: elastic-install.yml
 
 # Install AWS Plugin
