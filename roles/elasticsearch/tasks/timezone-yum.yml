@@ -1,0 +1,19 @@
+---
+# This isn't quite working and needs some TLC before it is used
+- name: timezone | check current timezone
+  shell: grep ZONE /etc/sysconfig/clock
+  changed_when: 0
+  register: current_zone
+
+- name: timezone | Set timezone variables
+  copy:
+    content={{elasticsearch_timezone}}
+    dest=/etc/timezone
+    owner=root
+    group=root
+    mode=0644
+  when: current_zone.stdout != elasticsearch_timezone
+
+- name: timezone | Set timezone
+  file: src=/usr/share/zoneinfo/{{ elasticsearch_timezone }}  dest=/etc/localtime state=link force=yes
+  when: current_zone.stdout != elasticsearch_timezone

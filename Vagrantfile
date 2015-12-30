@@ -24,13 +24,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      ansible.vm.box = "geerlingguy/centos7"
      ansible.vm.hostname = "ansible"
      ansible.vm.network :private_network, ip: "172.16.81.4"
-     ansible.vm.synced_folder "roles", "/etc/ansible/roles"
      ansible.vm.provider "virtualbox" do |vb|
       vb.customize ["modifyvm", :id, "--memory", "512"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      end
      ansible.vm.provision "shell", inline: "yum install ansible rsync -y; rsync -av /vagrant/config/ansible.cfg /etc/ansible/ansible.cfg; rsync -av /vagrant/config/hosts /etc/ansible/hosts"
-  end
+ end
 
  config.vm.define "kibana" do |kibana|
     kibana.vm.box = "geerlingguy/centos7"
@@ -72,7 +71,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--memory", "1024"]
       vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      end
-     ansible.vm.preovision "shell", inline: ""
+     elasticsearch.vm.preovision "shell", inline: ""
    end
 
    config.vm.define "syslog" do |syslog|
@@ -95,7 +94,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
     end
 
-  hosts = ["kibana", "redis", "logstash", "elasticsearch", "syslog", "client"]
+  hosts = ["ansible", "kibana", "redis", "logstash", "elasticsearch", "syslog", "client"]
   hosts.each do |i|
     config.vm.define "#{i}" do |node|
         node.vm.provision "shell", inline: $hostnames

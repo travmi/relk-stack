@@ -1,0 +1,6 @@
+---
+# OpenJDK makes our lives much easier
+- name: java | Install dependencies
+  yum:
+    pkg={{elasticsearch_yum_java_package}}
+    state=present

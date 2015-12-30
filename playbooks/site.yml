@@ -1,0 +1,22 @@
+---
+  - hosts: redis
+    roles:
+      - redis
+
+  - hosts: elasticsearch
+    roles:
+      - elasticsearch
+
+  - hosts: logstash
+    roles:
+      - logstash
+
+  - hosts: kibana
+    roles:
+      - kibana
+
+  - hosts: syslog
+    roles:
+      - syslog-ng
+
+  - hosts: client
