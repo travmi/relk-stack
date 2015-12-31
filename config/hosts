@@ -4,3 +4,4 @@ elasticsearch
 client
 syslog
 kibana
+logstash-queue

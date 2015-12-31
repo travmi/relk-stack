@@ -1,0 +1,29 @@
+---
+  - hosts: logstash-queue
+    roles:
+      - openjdk
+      - logstash
+
+    vars:
+      logstash_inputs: |
+       syslog { host => "{{ ansible_enp0s8.ipv4.address }}"
+                port => "514"
+                type => "syslog_input"
+              }
+
+       syslog { host => "{{ ansible_enp0s8.ipv4.address }}"
+                port => "515"
+                type => "syslog_input_local"
+              }
+
+      logstash_filters: |
+       geoip { source => "ip_address"
+             }
+
+       multiline { pattern => "^No lfn2pfn"
+                   what => "previous"
+                 }
+
+      logstash_outputs: |
+       file { path => "/var/log/logstash/output.log"
+            }

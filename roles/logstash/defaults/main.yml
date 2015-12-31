@@ -1,0 +1,10 @@
+---
+
+logstash_version: "2.1.1"
+
+logstash_conf_dir: "/etc/logstash/conf.d/"
+
+logstash_defaults: "LS_USER=logstash"
+
+defaults_RedHat: "/etc/sysconfig/logstash"
+defaults_Debian: "/etc/default/logstash"
