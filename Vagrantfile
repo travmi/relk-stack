@@ -3,7 +3,7 @@
 
 $hostnames = <<EOF
 echo "Setting up /etc/hosts"
-echo -e "172.16.81.4\tansible\n172.16.81.5\tkibana\n172.16.81.6\tredis\n172.16.81.7\tlogstash\n172.16.81.8\telasticsearch\n172.16.81.9\tsyslog\n172.16.81.10\tclient\n" >> /etc/hosts
+echo -e "172.16.81.4\tansible\n172.16.81.5\tkibana\n172.16.81.6\tredis\n172.16.81.7\tlogstash\n172.16.81.8\telasticsearch\n172.16.81.9\tsyslog\n172.16.81.10\tclient\n172.16.81.11\tlogstash-queue\n" >> /etc/hosts
 EOF
 
 # Install packages I like
@@ -93,7 +93,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
     end
 
-  hosts = ["ansible", "kibana", "redis", "logstash", "elasticsearch", "syslog", "client"]
+    config.vm.define "logstash-queue" do |logstash|
+       logstash.vm.box = "geerlingguy/centos7"
+       logstash.vm.hostname = "logstash-queue"
+       logstash.vm.network :private_network, ip: "172.16.81.11"
+       logstash.vm.provider "virtualbox" do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "512"]
+        vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+       end
+     end
+
+  hosts = ["ansible", "kibana", "redis", "logstash", "elasticsearch", "syslog", "client", "logstash-queue"]
   hosts.each do |i|
     config.vm.define "#{i}" do |node|
         node.vm.provision "shell", inline: $hostnames
