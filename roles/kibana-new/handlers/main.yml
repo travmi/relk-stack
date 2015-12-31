@@ -1,0 +1,4 @@
+---
+
+  - name: remove kibana archive
+    file: path=/tmp/kibana-{{kibana_full_version}}.tgz state=absent force=yes

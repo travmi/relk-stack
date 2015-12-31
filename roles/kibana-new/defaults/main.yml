@@ -1,0 +1,7 @@
+---
+
+kibana_path: /opt/kibana/
+kibana_full_version: 4.3.1
+kibana_manage_service: True
+kibana_port: 5601
+elasticsearch_url: 172.16.81.8

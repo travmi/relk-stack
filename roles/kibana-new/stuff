@@ -11,6 +11,17 @@ ExecStart=/opt/kibana/node/bin/node /opt/kibana/src/bin/kibana.js
 [Install]
 WantedBy=multi-user.target
 
+https://www.youtube.com/watch?v=P0phFCuW79o
+
+
+[Service]
+ExecStart=/opt/kibana/kibana-4.3.1-linux-x64/bin/kibana
+
+[Install]
+WantedBy=multi-user.target
+
+
+
 
 1  cd /etc/yum.repos.d/
  2  ll -h
