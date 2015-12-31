@@ -1,10 +1,16 @@
 ---
-  - name: dependencies
+  - name: install dependencies
+    yum: name={{ item }} state=latest
+    with_items:
+      - wget
 
   - name: check if kibana is already installed
     stat: path="{{ kibana_path }}/kibana-{{ kibana_full_version }}-linux-x64/bin/kibana"
     changed_when: false
     register: kibana_installed
+
+  - name: create kibana directory
+    file: path={{kibana_path}} state=directory
 
   - name: get Kibana archive
     get_url: url=https://download.elastic.co/kibana/kibana/kibana-{{kibana_full_version}}-linux-x64.tar.gz dest=/tmp/kibana-{{kibana_full_version}}.tgz
@@ -18,11 +24,12 @@
 
   - name: set Kibana configuration
     template: src=kibana.yml.j2 dest={{ kibana_path }}/kibana-{{ kibana_full_version }}-linux-x64/config/kibana.yml owner=nginx group=nginx mode=0644
+    notify: restart kibana
 
   - name: add Kibana systemd configuration
-    template: src='kibana.service' dest='/lib/systemd/system/kibana.service' owner=root group=root mode=0640
+    copy: src='kibana.service' dest='/lib/systemd/system/kibana.service' owner=root group=root mode=0640
 
-# Should added a registered variable here
+# Should add a registered variable here
 # Then systemd reload only when variable changes
 
   - name: add Kibana systemd symlink
