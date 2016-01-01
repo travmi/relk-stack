@@ -1,0 +1,32 @@
+---
+# `filebeat_config` is templated directly into filebeat.yml for the config.
+# You are expected to override this variable, as these configurations are
+# only suited for development purposes.
+# See https://github.com/elastic/filebeat/blob/master/etc/filebeat.yml for
+# an exhaustive list of configurations.
+filebeat_config:
+  filebeat:
+    prospectors:
+      - paths:
+          - /var/log/httpd/access.log
+        input_type: log
+        fields:
+          type: apache-access
+      - paths:
+          - /var/log/nginx/access.log
+        input_type: log
+        fields:
+          type: nginx-access
+  output:
+    logstash:
+      enabled: true
+      hosts:
+        - 172.16.81.11:5044
+  logging:
+    to_syslog: true
+    level: error
+
+# The installation state of the filebeat package, passed to the appropriate
+# packaging module (yum/apt) as the 'state'.
+# Set to 'latest' to upgrade.
+filebeat_package_state: present

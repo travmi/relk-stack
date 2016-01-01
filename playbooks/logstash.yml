@@ -7,27 +7,27 @@
 
     vars:
       logstash_inputs: |
-       syslog { host => "{{ ansible_enp0s8.ipv4.address }}"
-                port => "514"
-                type => "syslog_input"
-              }
-
-       syslog { host => "{{ ansible_enp0s8.ipv4.address }}"
-                port => "515"
-                type => "syslog_input_local"
-              }
-
-      logstash_filters: |
-       geoip { source => "ip_address"
+       beats {
+              port => 5044
              }
 
-       multiline { pattern => "^No lfn2pfn"
-                   what => "previous"
-                 }
+      logstash_filters: |
+       grok {
+              type => "apache=access"
+              match => [ "message", "%{COMBINEDAPACHELOG}" ]
+            }
+
+       grok {
+             type => "nginx-access"
+             match => [ "message", "%{COMBINEDAPACHELOG}" ]
+            }
 
       logstash_outputs: |
-       file { path => "/var/log/logstash/output.log"
-            }
+       redis {
+               host => "172.16.81.6"
+               data_type => "list"
+               key => "logstash"
+             }
 
 # Host to take input from Redis and feed to Elasticsearch
   - hosts: logstash
@@ -37,7 +37,20 @@
 
     vars:
       logstash_inputs: |
+       redis {
+              host => "172.16.81.6"
+              type => "redis-input"
+              data_type => "list"
+              key => "logstash"
+             }
 
       logstash_filters: |
+       date {
+              type => "apache-access"
+              match => [ "message", "%{COMBINEDAPACHELOG}" ]
+            }
 
       logstash_outputs: |
+       elasticsearch {
+                      hosts => ["172.16.81.8"]
+                     }
