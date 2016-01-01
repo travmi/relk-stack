@@ -1,4 +1,5 @@
 ---
+# Host to input multiple beats and output to Redis
   - hosts: logstash-queue
     roles:
       - openjdk
@@ -27,3 +28,16 @@
       logstash_outputs: |
        file { path => "/var/log/logstash/output.log"
             }
+
+# Host to take input from Redis and feed to Elasticsearch
+  - hosts: logstash
+    roles:
+      - openjdk
+      - logstash
+
+    vars:
+      logstash_inputs: |
+
+      logstash_filters: |
+
+      logstash_outputs: |
