@@ -1,49 +1,47 @@
 ---
+  - name: install dependencies
+    yum: name={{ item }} state=latest
+    with_items:
+      - wget
 
-- name: check if kibana is already installed
-  stat: path="{{ kibana_path }}/kibana-{{ kibana_full_version }}-linux-x64/bin/kibana"
-  changed_when: false
-  register: kibana_installed
+  - name: check if kibana is already installed
+    stat: path="{{ kibana_path }}/kibana-{{ kibana_full_version }}-linux-x64/bin/kibana"
+    changed_when: false
+    register: kibana_installed
 
-- name: get Kibana archive
-  get_url: url=https://download.elastic.co/kibana/kibana/kibana-{{kibana_full_version}}-linux-x64.tar.gz dest=/tmp/kibana-{{kibana_full_version}}.tgz
-  when: kibana_installed.stat.exists == false
+  - name: create kibana directory
+    file: path={{kibana_path}} state=directory
 
-- name: untar kibana
-  unarchive: src=/tmp/kibana-{{kibana_full_version}}.tgz dest={{kibana_path}} copy=no
-  notify:
-    - remove Kibana archive
-  when: kibana_installed.stat.exists == false
+  - name: get Kibana archive
+    get_url: url=https://download.elastic.co/kibana/kibana/kibana-{{kibana_full_version}}-linux-x64.tar.gz dest=/tmp/kibana-{{kibana_full_version}}.tgz
+    when: kibana_installed.stat.exists == false
 
-- name: set Kibana configuration
-  template: src=kibana4.yml.j2 dest={{ kibana_path }}/kibana-{{ kibana_full_version }}-linux-x64/config/kibana.yml owner=nginx group=nginx mode=0644
+  - name: untar kibana
+    unarchive: src=/tmp/kibana-{{kibana_full_version}}.tgz dest={{kibana_path}} copy=no
+    notify:
+      - remove kibana archive
+    when: kibana_installed.stat.exists == false
 
-# Systemd
-- name: check if running on systemd
-  command: cat /proc/1/cmdline
-  changed_when: false
-  register: systemd
+  - name: set Kibana configuration
+    template: src=kibana.yml.j2 dest={{ kibana_path }}/kibana-{{ kibana_full_version }}-linux-x64/config/kibana.yml owner=nginx group=nginx mode=0644
+    notify: restart kibana
 
-- name: add Kibana systemd configuration
-  template: src='kibana4_systemd.j2' dest='/lib/systemd/system/kibana.service' owner=root group=root mode=0640
-  when: "'systemd' in systemd.stdout"
+  - name: add Kibana systemd configuration
+    copy: src='kibana.service' dest='/lib/systemd/system/kibana.service' owner=root group=root mode=0640
 
-- name: add Kibana systemd symlink
-  file: src=/lib/systemd/system/kibana.service dest=/etc/systemd/system/multi-user.target.wants/kibana.service state=link
-  when: "'systemd' in systemd.stdout"
-  notify: reload systemd
+# Should add a registered variable here
+# Then systemd reload only when variable changes
 
-- meta: flush_handlers
-  when: "'systemd' in systemd.stdout and kibana_manage_service"
+  - name: add Kibana systemd symlink
+    file: src=/lib/systemd/system/kibana.service dest=/etc/systemd/system/multi-user.target.wants/kibana.service state=link
+    notify: reload systemd
 
-# Init
-- name: add Kibana init configuration
-  template: src='kibana4_init.j2' dest='/etc/init.d/kibana' owner=root group=root mode=0755
-  when: "'systemd' not in systemd.stdout"
+  - meta: flush_handlers
+    when: "kibana_manage_service"
 
-- name: ensure permissions are correct
-  file: path=/opt/kibana state=directory owner=nginx group=nginx recurse=yes
+  - name: ensure permissions are correct
+    file: path=/opt/kibana state=directory owner=nginx group=nginx recurse=yes
 
-- name: ensure kibana is started
-  service: name=kibana runlevel=default state=started enabled=yes
-  when: kibana_manage_service
+  - name: ensure kibana is started
+    service: name=kibana runlevel=default state=started enabled=yes
+    when: kibana_manage_service

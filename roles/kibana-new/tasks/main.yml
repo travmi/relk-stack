@@ -1,4 +1,0 @@
----
-  - include: nginx.yml
-
-  - include: kibana4.yml

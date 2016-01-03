@@ -1,37 +1,8 @@
-# URL address to reach kibana
-# dns_url_kibana: kibana.domain.lan
-dns_url_kibana: kibana
+---
 
-# defualts to locahost if no host is specified
-elasticsearch_url: localhost
-
-# Folder to store Kibana
-kibana_path: /opt/kibana
-
-# Manage service
+kibana_path: /opt/kibana/
+kibana_full_version: 4.3.1
 kibana_manage_service: True
-
-# Set Kibana major version
-kibana_major_version: 4
-#kibana_major_version: 3
-
-## Kibana version
-# For v4 use latest version (https://www.elastic.co/downloads/kibana)
-kibana_full_version: 4.1.1
-# For v3, use GitHub tag
-#kibana_full_version: v3.1.2
-
-# kibana4 configuration options
 kibana_port: 5601
-kibana_host: '0.0.0.0'
-kibana_elasticsearch_url: 'http://{{elasticsearch_url}}:9200'
-kibana_elasticsearch_preserve_host: true
-kibana_index: '.kibana'
-kibana_enable_authentication: false
-kibana_elasticsearch_username: user
-kibana_elasticsearch_password: pass
-kibana_default_app_id: discover
-kibana_request_timeout: 300000
-kibana_shard_timeout: 0
-kibana_verify_ssl: true
-kibana_pid_file: '/var/run/kibana.pid'
+dns_url_kibana: kibana
+elasticsearch_url: 172.16.81.8

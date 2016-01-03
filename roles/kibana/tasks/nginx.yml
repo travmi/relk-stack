@@ -1,14 +1,19 @@
 ---
-  - name: Install nginx
+  - name: install epel
+    yum: name=epel-release state=latest
+
+  - name: install nginx
     yum: name=nginx state=latest
 
-  - name: start nginx
-    service: name=nginx state=started enabled=yes
+  - debug: var=dns_url_kibana
 
-  - name: Copy nginx config
+  - name: copy kibana vhost config
+    template: src=kibana.conf.j2 dest=/etc/nginx/conf.d/kibana.conf
+    notify: restart nginx
+
+  - name: copy nginx config
     template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
     notify: restart nginx
 
-  - name: Copy Kibana vhost config
-    template: src=kibana.conf.j2 dest=/etc/nginx/conf.d/kibana.conf
-    notify: restart nginx
+  - name: start nginx
+    service: name=nginx state=started enabled=yes
