@@ -1,7 +1,7 @@
 ---
   - hosts: kibana
     roles:
-      - kibana-new
+      - kibana
 
     vars:
       elasticsearch_url: 172.16.81.8
