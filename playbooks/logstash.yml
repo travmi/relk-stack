@@ -56,6 +56,18 @@
           }
         }
 
+        if [type] == "apache-access" {
+          grok {
+            match => { "message" => "%{COMBINEDAPACHELOG}" }
+            }
+        }
+
+        if [type] == "nginx-access" {
+          grok {
+            match => { "message" => "%{COMBINEDAPACHELOG}" }
+            }
+        }
+
       logstash_outputs: |
        elasticsearch {
                       hosts => ["172.16.81.8"]
