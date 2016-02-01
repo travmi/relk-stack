@@ -1,0 +1,11 @@
+---
+  - name: install dependencies
+    yum: name={{ item }} state=latest
+    with_items:
+      - perl-Data-Dumper
+
+  - name: install bloonix repository
+    yum: name=https://download.bloonix.de/repos/centos/7/noarch/bloonix-release-0.5-1.el7.centos.noarch.rpm state=present
+
+  - name: install awesant
+    yum: name=awesant

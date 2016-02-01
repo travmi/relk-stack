@@ -1,7 +1,11 @@
 redis
 logstash
 elasticsearch
-client
 syslog
 kibana
 logstash-queue
+
+
+[clients]
+client
+client2

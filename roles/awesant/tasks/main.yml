@@ -1,0 +1,3 @@
+---
+  - include: awesant-install.yml
+  - include: awesant-configuration.yml

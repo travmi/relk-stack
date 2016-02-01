@@ -1,0 +1,3 @@
+---
+  - name: restart awesant
+    service: name=awesant-agent state=restarted enabled=yes

@@ -1,0 +1,20 @@
+# {{ ansible_managed }}
+
+input {
+
+{{ awesant_inputs }}
+
+}
+
+output {
+
+{{ awesant_outputs }}
+
+}
+
+logger {
+    file {
+        filename /var/log/awesant/agent.log
+        maxlevel info
+    }
+}

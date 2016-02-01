@@ -103,7 +103,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
        end
      end
 
-  hosts = ["ansible", "kibana", "redis", "logstash", "elasticsearch", "syslog", "client", "logstash-queue"]
+     config.vm.define "client2" do |client2|
+        client2.vm.box = "geerlingguy/centos7"
+        client2.vm.hostname = "client2"
+        client2.vm.network :private_network, ip: "172.16.81.12"
+        client2.vm.provider "virtualbox" do |vb|
+         vb.customize ["modifyvm", :id, "--memory", "512"]
+         vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        end
+      end
+
+  hosts = ["ansible", "kibana", "redis", "logstash", "elasticsearch", "syslog", "client", "logstash-queue", "client2"]
   hosts.each do |i|
     config.vm.define "#{i}" do |node|
         node.vm.provision "shell", inline: $hostnames

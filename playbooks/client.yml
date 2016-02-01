@@ -1,5 +1,31 @@
 ---
-  - hosts: client
+  - hosts: clients
     roles:
       - openjdk
-      - filebeat
+      - awesant
+
+    vars:
+      awesant_inputs: |
+       file {
+           type syslog
+           path /var/log/messages
+       }
+       file {
+           type audit
+           path /var/log/audit/audit.log
+       }
+       file {
+         type nginx-access
+         path /var/log/nginx/*access.log
+       }
+       file {
+           type apache-access
+           path /var/log/httpd/*access.log
+       }
+
+      awesant_outputs: |
+       redis {
+         type *   # match all input types
+         key logstash
+         host 172.16.81.6
+        }
